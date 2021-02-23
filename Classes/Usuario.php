@@ -41,9 +41,9 @@ class Usuario {
 
     public function loadByid($id){
 
-        $sql = new Sql();
+        $vwx = new Sql();
 
-        $results= $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(
+        $results= $vwx->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(
             ":ID"=>$id
         ));
 
@@ -69,9 +69,9 @@ class Usuario {
 
     public function login($login, $password){
 
-        $sql = new Sql();
+        $vwx = new Sql();
 
-        $results= $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
+        $results= $vwx->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
             ":LOGIN"=>$login,
             ":PASSWORD"=>$password
         ));
@@ -92,9 +92,9 @@ class Usuario {
     }
 
     public function insert(){
-        $abc = new Sql();
+        $vwx = new Sql();
 
-        $results = $abc->select("CALL sp_usuarios_insert(:LOGIN, :PASSOWORD)", array(
+        $results = $vwx->select("CALL sp_usuarios_insert(:LOGIN, :PASSOWORD)", array(
             ':LOGIN'=>$this->getDeslogin(),
             ':PASSWORD'=>$this->getDessenha()
         ));
@@ -102,6 +102,21 @@ class Usuario {
         if (count($results) >0){
             $this->setData($results[0]);
         }
+    }
+
+    public function update($login, $password){
+
+        $this->setDeslogin($login);
+        $this->setDessenha($password);
+
+        $vwx = new Sql();
+
+        $vwx->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario = ID", array(
+            ':LOGIN'=>$this->getDeslogin(),
+            ':PASSWORD'=>$this->getDessenha(),
+            ':ID'=>$this->getIdusuario()
+        ));
+
     }
 
     public function __construct($login= "",$password=""){
